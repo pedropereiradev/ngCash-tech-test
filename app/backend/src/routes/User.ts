@@ -9,6 +9,6 @@ const router = Router();
 const userService = new UserService(Users, Accounts);
 const userController = new UserController(userService);
 
-router.post('/login', (req, res) => userController.login(req, res));
+router.post('/', (req, res) => userController.create(req, res));
 
 export default router;
