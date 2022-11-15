@@ -20,6 +20,7 @@ module.exports = {
       accountId: {
         type: Sequelize.UUID,
         allowNull: false,
+        field: 'account_id'
       }
     });
   },

@@ -11,11 +11,13 @@ module.exports = {
       },
       debitedAccountId: {
         type: Sequelize.UUID,
-        allowNull: false
+        allowNull: false,
+        field: 'debited_account_id'
       },
       creditedAccountId: {
         type: Sequelize.UUID,
-        allowNull: false
+        allowNull: false,
+        field: 'credited_account_id'
       },
       value: {
         type: Sequelize.DECIMAL,
@@ -24,7 +26,8 @@ module.exports = {
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
+        field: 'created_at'
       }
     });
   },

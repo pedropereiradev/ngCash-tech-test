@@ -50,7 +50,7 @@ Transactions.init(
   },
   {
     sequelize: db,
-    modelName: 'transactions',
+    tableName: 'transactions',
     timestamps: false,
     underscored: true
   }
