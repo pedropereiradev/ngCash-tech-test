@@ -48,4 +48,4 @@ Users.init(
   }
 );
 
-Users.belongsTo(Accounts, { foreignKey: 'id', as: 'accountId' });
+Users.belongsTo(Accounts, { foreignKey: 'id' });
