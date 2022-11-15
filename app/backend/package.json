@@ -7,7 +7,8 @@
     "build": "npx tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run build && node .",
-    "dev": "nodemon --watch \"./src/**\" ./src/server.ts"
+    "dev": "nodemon --watch \"./src/**\" ./src/server.ts",
+    "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
   },
   "author": "Pedro Pereira",
   "license": "ISC",
