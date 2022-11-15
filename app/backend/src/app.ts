@@ -10,6 +10,7 @@ class App {
     this.config();
 
     this.app.use(routes.login);
+    this.app.use('/user', routes.user);
 
     this.app.get('/', (req, res) => res.json({ ok: true }));
   }
