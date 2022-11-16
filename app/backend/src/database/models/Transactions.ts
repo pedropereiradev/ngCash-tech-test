@@ -5,15 +5,17 @@ import { Model, Optional } from 'sequelize'
 import db from './';
 import Accounts from './Accounts';
 
-type TransactionsAttributes = {
-  id: string,
+type TransactionsCreationAttributes = {
   debitedAccountId: string
   creditedAccountId: string
   value: number
+}
+
+type TransactionsAttributes = TransactionsCreationAttributes & {
+  id: string,
   createdAt: Date
 }
 
-type TransactionsCreationAttributes = Optional<TransactionsAttributes, 'id'>
 
 export default class Transactions extends Model<TransactionsAttributes, TransactionsCreationAttributes> {
   declare id: string;
@@ -44,7 +46,6 @@ Transactions.init(
     },
     createdAt: {
       type: DATE,
-      allowNull: false,
       defaultValue: NOW
     }
   },
@@ -56,5 +57,5 @@ Transactions.init(
   }
 );
 
-Transactions.belongsTo(Accounts, { foreignKey: 'id', as: 'debitedAccountId' });
-Transactions.belongsTo(Accounts, { foreignKey: 'id', as: 'creditedAccountId' });
+Transactions.belongsTo(Accounts, { foreignKey: 'debitedAccountId' });
+Transactions.belongsTo(Accounts, { foreignKey: 'creditedAccountId' });
