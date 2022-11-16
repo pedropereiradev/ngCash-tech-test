@@ -131,4 +131,41 @@ export default class TransactionsService {
       }
     })
   }
+
+  public async getAllByCashInOrCashOut(userId: string, isCashIn: boolean) {
+    const userAccountId = await this.getUserAccountId(userId);
+    const account = isCashIn ? 'debitedAccountId' : 'creditedAccountId';
+
+    return this.transactionModel.findAll({
+      where: {
+        [account]: userAccountId,
+      }
+    })
+  }
+
+  public async getAllByDate(userId: string, date: string) {
+    const userAccountId = await this.getUserAccountId(userId);
+
+    return this.transactionModel.findAll({
+      where: {
+        transactionDate: date,
+        [Op.or]: [
+          { debitedAccountId: userAccountId },
+          { creditedAccountId: userAccountId },
+        ]
+      }
+    })
+  }
+
+  public async getAllByDateAndCashInOrCashOut(userId: string, date: string, isCashIn: boolean) {
+    const userAccountId = await this.getUserAccountId(userId);
+    const account = isCashIn ? 'debitedAccountId' : 'creditedAccountId';
+
+    return this.transactionModel.findAll({
+      where: {
+        transactionDate: date,
+        [account]: userAccountId,
+      }
+    })
+  }
 }

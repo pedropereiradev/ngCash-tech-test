@@ -31,6 +31,18 @@ export default class TransactionController {
     }
   }
 
+  private async getAllWithFilters(userId: string, isCashIn: string, date: string) {
+    
+    if (isCashIn && date) {
+      return await this.transactionService.getAllByDateAndCashInOrCashOut(userId, date, isCashIn === 'true');
+    } else {
+      if (isCashIn && !date) return await this.transactionService.getAllByCashInOrCashOut(userId, isCashIn === 'true');
+      if (!isCashIn && date) return await this.transactionService.getAllByDate(userId, date);
+
+      return await this.transactionService.getAll(userId);
+    }
+  }
+
   public async getAll(req: Request, res: Response): Promise<Response> {
     try {
       const { authorization } = req.headers;
@@ -40,8 +52,9 @@ export default class TransactionController {
       }
 
       const { id } = req.params;
+      const { isCashIn, date } = req.query;
 
-      const result = await this.transactionService.getAll(id);
+      const result = await this.getAllWithFilters(id, isCashIn as string, date as string);
 
       return res.status(StatusCodes.OK).json(result);
     } catch (error) {
