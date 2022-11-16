@@ -10,8 +10,8 @@ type LoginFormData = {
 };
 
 function Login() {
-  const { handleSubmit, register } = useForm<LoginFormData>();
-  const [showMessage, setShowMessage] = React.useState(false);
+  const { handleSubmit, register, formState: { errors } } = useForm<LoginFormData>();
+  const [showMessage, setShowMessage] = React.useState('');
   const navigate = useNavigate();
 
   const onSubmit = handleSubmit(async (data) => {
@@ -27,7 +27,7 @@ function Login() {
       navigate('/dashboard');
     }
     
-    if (loginData.code) setShowMessage(true);
+    if (loginData.code) setShowMessage(loginData.response.data.message);
   });
 
   return (
@@ -44,7 +44,9 @@ function Login() {
             Login
           </button>
         </form>
-        <span>{showMessage ? 'Invalid username or password' : ''}</span>
+        <span>{showMessage}</span>
+        <span>{errors.username?.message}</span>
+        <span>{errors.password?.message}</span>
       </section>
     </>
   );
