@@ -1,5 +1,6 @@
 import { DECIMAL, NOW } from 'sequelize'
 import { DATE } from 'sequelize'
+import { DATEONLY } from 'sequelize';
 import { UUID, UUIDV4 } from 'sequelize'
 import { Model, Optional } from 'sequelize'
 import db from './';
@@ -14,6 +15,7 @@ type TransactionsCreationAttributes = {
 type TransactionsAttributes = TransactionsCreationAttributes & {
   id: string,
   createdAt: Date
+  transactionDate: Date
 }
 
 
@@ -23,6 +25,7 @@ export default class Transactions extends Model<TransactionsAttributes, Transact
   declare creditedAccountId: string;
   declare value: number;
   declare createdAt: Date;
+  declare transactionDate: Date;
 }
 
 Transactions.init(
@@ -43,6 +46,10 @@ Transactions.init(
     value: {
       type: DECIMAL,
       allowNull: false
+    },
+    transactionDate: {
+      type: DATEONLY,
+      defaultValue: new Date().toISOString().split(',')[0]
     },
     createdAt: {
       type: DATE,

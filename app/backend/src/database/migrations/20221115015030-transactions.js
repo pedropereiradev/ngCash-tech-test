@@ -23,6 +23,11 @@ module.exports = {
         type: Sequelize.DECIMAL,
         allowNull: false
       },
+      transactionDate: {
+        type: Sequelize.DATEONLY,
+        defaultValue: new Date().toISOString().split(',')[0],
+        field: 'transaction_date'
+      },
       createdAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
