@@ -57,5 +57,5 @@ Transactions.init(
   }
 );
 
-Transactions.belongsTo(Accounts, { foreignKey: 'debitedAccountId' });
-Transactions.belongsTo(Accounts, { foreignKey: 'creditedAccountId' });
+Transactions.belongsTo(Accounts, { foreignKey: 'debitedAccountId', as: 'debitedAccount' });
+Transactions.belongsTo(Accounts, { foreignKey: 'creditedAccountId', as: 'creditedAccount' });

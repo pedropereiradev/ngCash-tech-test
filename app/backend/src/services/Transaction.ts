@@ -5,6 +5,7 @@ import Users from '../database/models/Users';
 import db from '../database/models';
 import { Transaction } from 'sequelize';
 import { StatusCodes } from 'http-status-codes';
+import { Op } from 'sequelize';
 
 export default class TransactionsService {
   constructor(
@@ -116,5 +117,30 @@ export default class TransactionsService {
       console.error(error);
       return null;
     }
+  }
+
+  public async getAll(userId: string) {
+    const userAccountId = await this.getUserAccountId(userId);
+
+    return this.transactionModel.findAll({
+      where: {
+        [Op.or]: [
+          { debitedAccountId: userAccountId },
+          { creditedAccountId: userAccountId },
+        ]
+      },
+      include: [
+        {
+          model: Accounts,
+          as: 'debitedAccount',
+          attributes: { exclude: ['id'] }
+        },
+        {
+          model: Accounts,
+          as: 'creditedAccount',
+          attributes: { exclude: ['id'] }
+        }
+      ],
+    })
   }
 }
