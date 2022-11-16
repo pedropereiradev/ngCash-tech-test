@@ -128,19 +128,7 @@ export default class TransactionsService {
           { debitedAccountId: userAccountId },
           { creditedAccountId: userAccountId },
         ]
-      },
-      include: [
-        {
-          model: Accounts,
-          as: 'debitedAccount',
-          attributes: { exclude: ['id'] }
-        },
-        {
-          model: Accounts,
-          as: 'creditedAccount',
-          attributes: { exclude: ['id'] }
-        }
-      ],
+      }
     })
   }
 }
