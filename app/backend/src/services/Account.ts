@@ -1,6 +1,5 @@
 import Accounts from '../database/models/Accounts';
 import Users from '../database/models/Users';
-import Token from './utils/Token';
 
 export default class AccountService {
   constructor(private accountModel: typeof Accounts, private userModel: typeof Users) { }

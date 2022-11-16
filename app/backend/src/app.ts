@@ -12,6 +12,7 @@ class App {
     this.app.use(routes.login);
     this.app.use('/user', routes.user);
     this.app.use('/account', routes.account);
+    this.app.use('/transaction', routes.transaction)
 
     this.app.get('/', (req, res) => res.json({ ok: true }));
   }
