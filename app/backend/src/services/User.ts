@@ -4,6 +4,7 @@ import BCrypt from './utils/Bcrypt';
 import Token from './utils/Token';
 import db from '../database/models';
 import Accounts from '../database/models/Accounts';
+import { Op } from 'sequelize';
 
 
 export default class UserService {
@@ -61,5 +62,16 @@ export default class UserService {
 
       return null;
     }
+  }
+
+  public async getAll(userId: string) {
+    return this.userModel.findAll({
+      where: {
+        id: { [Op.ne]: userId }
+      },
+      attributes: {
+        exclude: ['id', 'password']
+      }
+    })
   }
 }

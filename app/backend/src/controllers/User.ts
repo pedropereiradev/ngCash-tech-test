@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import Token from '../services/utils/Token';
 import { IUser } from '../interfaces/IUser';
 import UserService from '../services/User';
 import userValidationSchema from './DTO/userSchemas';
@@ -47,6 +48,25 @@ export default class UserController {
       }
 
       return res.status(StatusCodes.OK).json({ token });
+    } catch (error) {
+      console.error(error);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
+    }
+  }
+
+  public async getAll(req: Request, res: Response): Promise<Response> {
+    try {
+      const { authorization } = req.headers;
+
+      if (!authorization || !Token.validate(authorization)) {
+        return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Expired or invalid token' });
+      }
+
+      const { id } = req.params;
+
+      const result = await this.userService.getAll(id);
+
+      return res.status(StatusCodes.OK).json(result);
     } catch (error) {
       console.error(error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
