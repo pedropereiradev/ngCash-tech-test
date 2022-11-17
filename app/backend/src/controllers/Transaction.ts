@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { JwtPayload } from 'jsonwebtoken';
 import Token from '../services/utils/Token';
 import TransactionsService from '../services/Transaction';
 import { ITransaction } from '../interfaces/ITransaction';
-import { JwtPayload } from 'jsonwebtoken';
 
 export default class TransactionController {
   constructor(private transactionService: TransactionsService) { }
@@ -18,43 +18,49 @@ export default class TransactionController {
 
       const { originAccount, destinationAccount, value } = req.body as ITransaction;
 
-      const result = await this.transactionService.create({ originAccount, destinationAccount, value })
+      const result = await this.transactionService
+        .create({ originAccount, destinationAccount, value });
 
       if (result?.message && result?.status) {
         return res.status(result.status).json({ message: result.message });
       }
 
       return res.status(StatusCodes.CREATED).end();
-
     } catch (error) {
       console.error(error);
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
+    }
+  }
+
+  private static transactionTypeSelector(transactionType: string):string {
+    switch (transactionType) {
+      case 'cash-in':
+        return 'debitedAccountId';
+      case 'cash-out':
+        return 'creditedAccountId';
+      default:
+        return '';
     }
   }
 
   private async getAllWithFilters(username: string, type: string, date: string) {
-    let transactionType;
-
-   switch (type) {
-    case 'cash-in':
-       transactionType = 'debitedAccountId'
-      break;
-     case 'cash-out':
-       transactionType = 'creditedAccountId'
-       break;
-     default:
-       transactionType = '';
-      break;
-   }
+    const transactionType = TransactionController.transactionTypeSelector(type);
 
     if (transactionType && date) {
-      return await this.transactionService.getAllByDateAndCashInOrCashOut(username, date, transactionType);
-    } else {
-      if (transactionType && !date) return await this.transactionService.getAllByCashInOrCashOut(username, transactionType);
-      if (!transactionType && date) return await this.transactionService.getAllByDate(username, date);
-
-      return await this.transactionService.getAll(username);
+      return this.transactionService
+        .getAllByDateAndCashInOrCashOut(username, date, transactionType);
     }
+    if (transactionType && !date) {
+      return this.transactionService
+        .getAllByCashInOrCashOut(username, transactionType);
+    }
+    if (!transactionType && date) {
+      return this.transactionService
+        .getAllByDate(username, date);
+    }
+
+    return this.transactionService.getAll(username);
   }
 
   public async getAll(req: Request, res: Response): Promise<Response> {
@@ -69,12 +75,14 @@ export default class TransactionController {
 
       const { transactionType, date } = req.query;
 
-      const result = await this.getAllWithFilters(tokenPayload.username, transactionType as string, date as string);
+      const result = await this
+        .getAllWithFilters(tokenPayload.username, transactionType as string, date as string);
 
       return res.status(StatusCodes.OK).json(result);
     } catch (error) {
       console.error(error);
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
     }
   }
 }

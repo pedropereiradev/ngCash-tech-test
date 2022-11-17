@@ -18,6 +18,5 @@ export default class Token {
     } catch (err) {
       return null;
     }
-
   }
 }

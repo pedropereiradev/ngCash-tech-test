@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import routes from './routes';
 
-class App {
+export default class App {
   public app: express.Express;
 
   constructor() {
@@ -13,7 +13,7 @@ class App {
     this.app.use(routes.login);
     this.app.use('/user', routes.user);
     this.app.use('/account', routes.account);
-    this.app.use('/transaction', routes.transaction)
+    this.app.use('/transaction', routes.transaction);
 
     this.app.get('/', (req, res) => res.json({ ok: true }));
   }
@@ -27,7 +27,7 @@ class App {
     };
 
     this.app.use(express.json());
-    this.app.use(cors())
+    this.app.use(cors());
     this.app.use(accessControl);
   }
 
@@ -35,5 +35,3 @@ class App {
     this.app.listen(PORT, () => console.log(`Running on port ${PORT}`));
   }
 }
-
-export { App };

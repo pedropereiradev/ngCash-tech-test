@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { JwtPayload } from 'jsonwebtoken';
 import Token from '../services/utils/Token';
 import AccountService from '../services/Account';
-import { JwtPayload } from 'jsonwebtoken';
 
 export default class AccountController {
   constructor(private accountSevice: AccountService) { }
@@ -26,7 +26,8 @@ export default class AccountController {
       return res.status(StatusCodes.OK).json(result);
     } catch (error) {
       console.log(error);
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
     }
   }
 }

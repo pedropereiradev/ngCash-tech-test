@@ -7,14 +7,13 @@ export default class AccountService {
   private async getUserAccountId(username: string): Promise<string | null> {
     const result = await this.userModel.findOne({
       where: {
-        username
+        username,
       },
-      include: [{ model: Accounts }]
+      include: [{ model: Accounts }],
     });
 
     return result?.accountId || null;
   }
-
 
   public async getBalance(username: string) {
     const accountId = await this.getUserAccountId(username);

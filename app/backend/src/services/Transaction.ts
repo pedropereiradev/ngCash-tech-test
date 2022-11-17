@@ -1,24 +1,23 @@
-import { ICreditedParams, ITransaction, ITransactionCreateParams } from '../interfaces/ITransaction';
+import { Transaction, Op } from 'sequelize';
+import { StatusCodes } from 'http-status-codes';
+import { ICreditedParams, ITransaction } from '../interfaces/ITransaction';
 import Accounts from '../database/models/Accounts';
 import Transactions from '../database/models/Transactions';
 import Users from '../database/models/Users';
 import db from '../database/models';
-import { Transaction } from 'sequelize';
-import { StatusCodes } from 'http-status-codes';
-import { Op } from 'sequelize';
 
 export default class TransactionsService {
   constructor(
     private transactionModel: typeof Transactions,
     private userModel: typeof Users,
-    private accountModel: typeof Accounts
+    private accountModel: typeof Accounts,
   ) { }
 
-  private async getUserAccountId(username: string,): Promise<string> {
+  private async getUserAccountId(username: string): Promise<string> {
     const result = await this.userModel.findOne({
       where: { username },
       include: [{ model: Accounts }],
-    })
+    });
 
     return result?.accountId || '';
   }
@@ -41,77 +40,68 @@ export default class TransactionsService {
     const validateCreditedValue = await this.isCreditedValueValid(
       {
         accountId,
-        value
-      }
+        value,
+      },
     );
 
     if (!validateCreditedValue) {
       return {
         status: StatusCodes.BAD_REQUEST,
-        message: 'Credited value can not be greater than your balance'
-      }
+        message: 'Credited value can not be greater than your balance',
+      };
     }
 
     return null;
   }
 
-  private async transactionCreate({ debitedAccountId, creditedAccountId, value }: ITransactionCreateParams, t: Transaction) {
-    await this.transactionModel.create({
-      debitedAccountId,
-      creditedAccountId,
-      value
-    },
-      { transaction: t });
+  private async transactionCreate({
+    destinationAccount, originAccount, value,
+  }: ITransaction, t: Transaction) {
+    await this.transactionModel.create(
+      {
+        creditedAccountId: destinationAccount,
+        debitedAccountId: originAccount,
+        value,
+      },
+      { transaction: t },
+    );
   }
 
-  private async accountBalanceUpdate(transactionCreateParams: ITransactionCreateParams, t: Transaction) {
-    const creditedAccountBalance = await this.getAccountBalance(transactionCreateParams.creditedAccountId)
-    const debitedAccountBalance = await this.getAccountBalance(transactionCreateParams.debitedAccountId);
+  private async accountBalanceUpdate({
+    originAccount, destinationAccount, value,
+  }: ITransaction, t: Transaction) {
+    const creditedAccountBalance = await this.getAccountBalance(originAccount);
+    const debitedAccountBalance = await this.getAccountBalance(destinationAccount);
 
     await this.accountModel.update(
+      { balance: Number(creditedAccountBalance) - Number(value) },
       {
-        balance: Number(creditedAccountBalance) - Number(transactionCreateParams.value)
+        where: { id: originAccount },
+        transaction: t,
       },
-      {
-        where: {
-          id: transactionCreateParams.creditedAccountId
-        },
-        transaction: t
-      })
+    );
 
     await this.accountModel.update(
+      { balance: Number(debitedAccountBalance) + Number(value) },
       {
-        balance: Number(debitedAccountBalance) + Number(transactionCreateParams.value)
+        where: { id: destinationAccount },
+        transaction: t,
       },
-      {
-        where: {
-          id: transactionCreateParams.debitedAccountId
-        },
-        transaction: t
-      })
+    );
   }
 
   public async create(transactionParams: ITransaction) {
     const t = await db.transaction();
-    const validateData = await this.validations({ accountId: transactionParams.originAccount, value: Number(transactionParams.value) });
+    const validateData = await this.validations(
+      { accountId: transactionParams.originAccount, value: Number(transactionParams.value) },
+    );
 
     if (validateData) return validateData;
 
     try {
-      await this.accountBalanceUpdate({
-        creditedAccountId: transactionParams.originAccount,
-        debitedAccountId: transactionParams.destinationAccount,
-        value: Number(transactionParams.value)
-      }, t);
+      await this.accountBalanceUpdate(transactionParams, t);
 
-      await this.transactionCreate(
-        {
-          debitedAccountId: transactionParams.destinationAccount,
-          creditedAccountId: transactionParams.originAccount,
-          value: Number(transactionParams.value),
-        },
-        t,
-      )
+      await this.transactionCreate(transactionParams, t);
 
       await t.commit();
     } catch (error) {
@@ -130,9 +120,9 @@ export default class TransactionsService {
         [Op.or]: [
           { debitedAccountId: userAccountId },
           { creditedAccountId: userAccountId },
-        ]
-      }
-    })
+        ],
+      },
+    });
   }
 
   public async getAllByCashInOrCashOut(username: string, transactionType: string) {
@@ -141,8 +131,8 @@ export default class TransactionsService {
     return this.transactionModel.findAll({
       where: {
         [transactionType]: userAccountId,
-      }
-    })
+      },
+    });
   }
 
   public async getAllByDate(username: string, date: string) {
@@ -154,19 +144,23 @@ export default class TransactionsService {
         [Op.or]: [
           { debitedAccountId: userAccountId },
           { creditedAccountId: userAccountId },
-        ]
-      }
-    })
+        ],
+      },
+    });
   }
 
-  public async getAllByDateAndCashInOrCashOut(username: string, date: string, transactionType: string) {
+  public async getAllByDateAndCashInOrCashOut(
+    username: string,
+    date: string,
+    transactionType: string,
+  ) {
     const userAccountId = await this.getUserAccountId(username);
 
     return this.transactionModel.findAll({
       where: {
         transactionDate: date,
         [transactionType]: userAccountId,
-      }
-    })
+      },
+    });
   }
 }

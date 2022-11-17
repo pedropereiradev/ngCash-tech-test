@@ -4,7 +4,6 @@ import Accounts from '../database/models/Accounts';
 import Users from '../database/models/Users';
 import AccountService from '../services/Account';
 
-
 const router = Router();
 
 const accountService = new AccountService(Accounts, Users);
