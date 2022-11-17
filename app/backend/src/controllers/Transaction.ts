@@ -32,13 +32,26 @@ export default class TransactionController {
     }
   }
 
-  private async getAllWithFilters(username: string, isCashIn: string, date: string) {
-    
-    if (isCashIn && date) {
-      return await this.transactionService.getAllByDateAndCashInOrCashOut(username, date, isCashIn === 'true');
+  private async getAllWithFilters(username: string, type: string, date: string) {
+    let transactionType;
+
+   switch (type) {
+    case 'cash-in':
+       transactionType = 'debitedAccountId'
+      break;
+     case 'cash-out':
+       transactionType = 'creditedAccountId'
+       break;
+     default:
+       transactionType = '';
+      break;
+   }
+
+    if (transactionType && date) {
+      return await this.transactionService.getAllByDateAndCashInOrCashOut(username, date, transactionType);
     } else {
-      if (isCashIn && !date) return await this.transactionService.getAllByCashInOrCashOut(username, isCashIn === 'true');
-      if (!isCashIn && date) return await this.transactionService.getAllByDate(username, date);
+      if (transactionType && !date) return await this.transactionService.getAllByCashInOrCashOut(username, transactionType);
+      if (!transactionType && date) return await this.transactionService.getAllByDate(username, date);
 
       return await this.transactionService.getAll(username);
     }
@@ -54,9 +67,9 @@ export default class TransactionController {
         return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Expired or invalid token' });
       }
 
-      const { isCashIn, date } = req.query;
+      const { transactionType, date } = req.query;
 
-      const result = await this.getAllWithFilters(tokenPayload.username, isCashIn as string, date as string);
+      const result = await this.getAllWithFilters(tokenPayload.username, transactionType as string, date as string);
 
       return res.status(StatusCodes.OK).json(result);
     } catch (error) {

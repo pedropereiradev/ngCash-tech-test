@@ -135,13 +135,12 @@ export default class TransactionsService {
     })
   }
 
-  public async getAllByCashInOrCashOut(username: string, isCashIn: boolean) {
+  public async getAllByCashInOrCashOut(username: string, transactionType: string) {
     const userAccountId = await this.getUserAccountId(username);
-    const account = isCashIn ? 'debitedAccountId' : 'creditedAccountId';
 
     return this.transactionModel.findAll({
       where: {
-        [account]: userAccountId,
+        [transactionType]: userAccountId,
       }
     })
   }
@@ -160,14 +159,13 @@ export default class TransactionsService {
     })
   }
 
-  public async getAllByDateAndCashInOrCashOut(username: string, date: string, isCashIn: boolean) {
+  public async getAllByDateAndCashInOrCashOut(username: string, date: string, transactionType: string) {
     const userAccountId = await this.getUserAccountId(username);
-    const account = isCashIn ? 'debitedAccountId' : 'creditedAccountId';
 
     return this.transactionModel.findAll({
       where: {
         transactionDate: date,
-        [account]: userAccountId,
+        [transactionType]: userAccountId,
       }
     })
   }
