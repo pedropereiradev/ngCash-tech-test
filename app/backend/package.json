@@ -31,15 +31,20 @@
     "@types/jsonwebtoken": "^8.5.9",
     "@types/node": "^18.11.9",
     "@types/sequelize": "^4.28.14",
+    "@typescript-eslint/eslint-plugin": "^5.43.0",
     "eslint": "^8.27.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-plugin-mocha": "^2.0.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
     "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.5.1",
+    "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-sonarjs": "^0.16.0",
     "nodemon": "^2.0.20",
     "sequelize-cli": "^6.5.2",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.3"
   }
 }
