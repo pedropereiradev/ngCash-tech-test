@@ -64,10 +64,21 @@ export default class UserService {
     }
   }
 
-  public async getAll(userId: string) {
+  public async getAll(username: string) {
     return this.userModel.findAll({
       where: {
-        id: { [Op.ne]: userId }
+        username: { [Op.ne]: username }
+      },
+      attributes: {
+        exclude: ['id', 'password']
+      }
+    })
+  }
+
+  public async getUser(username: string) {
+    return this.userModel.findOne({
+      where: {
+        username
       },
       attributes: {
         exclude: ['id', 'password']
