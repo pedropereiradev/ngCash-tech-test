@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../services/api';
-import { saveUser } from '../services/userLocalStorage';
+import { saveToken } from '../services/userLocalStorage';
 
 type LoginFormData = {
   username: string
@@ -18,12 +18,7 @@ function Login() {
     const loginData = await login(data);
 
     if (loginData.token) {
-      saveUser({
-        token: loginData.token,
-        username: data.username,
-        balance: 0,
-      });
-
+      saveToken(loginData.token);
       navigate('/dashboard');
     }
     
