@@ -98,4 +98,18 @@ export async function getAllTransactions() {
   }
 }
 
-// export async function getFilteredTransactions() {}
+export async function getFilteredTransactions(transactionType: string, date: string) {
+  try {
+    const { data } = await axios.get(TRANSACTION_ENDPOINT, {
+      headers: { 'authorization': getToken() },
+      params: {
+        transactionType,
+        date,
+      },
+    });
+
+    return data;
+  } catch (error) {
+    return error;
+  }
+}

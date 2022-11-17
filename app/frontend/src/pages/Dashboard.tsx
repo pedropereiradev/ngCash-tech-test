@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { createTransaction, getAllTransactions, getAllUsers, getBalance, getUserAccountInfo } from '../services/api';
+import { createTransaction, getAllTransactions, getAllUsers, getBalance, getFilteredTransactions, getUserAccountInfo } from '../services/api';
 import { logout } from '../services/userLocalStorage';
 
 type TransactionFormData = {
@@ -23,14 +23,24 @@ type TransactionTableData = {
   value: string
 };
 
+type TargetFiltersData = {
+  target: {
+    name: string
+    value: string
+  }
+};
+
 function Dashboard() {
   const [user, setUser] = React.useState({ id: '', balance: '', username: '', accountId: '' });
   const [accounts, setAccounts] = React.useState([]);
   const [showMessage, setShowMessage] = React.useState('');
   const [transactions, setTransactions] = React.useState([]);
+  const [order, setOrder] = React.useState({ orderBy: '', date: '' });
 
-  const { handleSubmit, register, formState: { errors } } = useForm<TransactionFormData>();
+  const { handleSubmit, register, formState: { errors }, reset } = useForm<TransactionFormData>();
   const navigate = useNavigate();
+
+  const SORT_BY = ['cash-in', 'cash-out'];
 
   React.useEffect(() => {
     async function getRenderInfo() {
@@ -46,40 +56,46 @@ function Dashboard() {
       }));
       setAccounts(userAccounts);
       setTransactions(userTransactions);
-
-      console.log({ userTransactions });
-      
     }
 
     getRenderInfo();
   }, []);
 
   React.useEffect(() => {
-    async function getUsersAccounts() {
-      const userAccounts = await getAllUsers();
-      
-      setAccounts(userAccounts);
+    async function getTransactionsWithFilters() {
+      let filteredTransactions;
+      if (!order.orderBy && !order.date) {
+        filteredTransactions = await getAllTransactions();
+      } else {
+        filteredTransactions = await getFilteredTransactions(order.orderBy, order.date);
+      }
+
+      setTransactions(filteredTransactions);
     }
 
-    getUsersAccounts();
-  }, []);
+    getTransactionsWithFilters();
+  }, [order]);
 
   const onSubmit = handleSubmit(async (data) => {
     const transaction = await createTransaction({ value: data.value, originAccount: user.accountId, destinationAccount: data.destinationAccount });
     if (transaction.code) return setShowMessage(transaction.response.data.message);
   
     setShowMessage('');
+
     const userBalanceResult = await getBalance();
+    const userTransactions = await getAllTransactions();
 
     setUser((prevState) => ({
       ...prevState,
       ...userBalanceResult,
     }));
+    setTransactions(userTransactions);
+    
+    reset();
   });
 
   const handleLogout = () => {
     logout();
-
     navigate('/');
   };
 
@@ -87,6 +103,13 @@ function Dashboard() {
     const result = accounts.find((account: AccountsData) => account.accountId === accountId) as unknown as AccountsData;
     
     return result?.username || '';
+  };
+
+  const handleFiltersChange = ({ target: { name, value } }: TargetFiltersData) => {
+    setOrder((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   return (
@@ -121,7 +144,14 @@ function Dashboard() {
       </section>
       <section>
         <h2>Transactions</h2>
-        <section>Filters</section>
+        <section>
+          <select value={order.orderBy} onChange={handleFiltersChange} name='orderBy' placeholder='Order by'>
+            <option value=''>All</option>
+            {SORT_BY.map((sort: string) => (
+              <option value={sort}>{sort}</option>
+            ))}
+          </select>
+        </section>
         <table>
           <thead>
             <tr>
@@ -136,7 +166,7 @@ function Dashboard() {
             {accounts.length && transactions.map((transaction: TransactionTableData, index) => (
               <tr>
                 <td>{index + 1}</td>
-                <td>{Number(transaction.value).toFixed(2)}</td>
+                <td>{Number(transaction.value).toFixed(2).replace('.', ',')}</td>
                 <td>{transaction.creditedAccountId === user.accountId ? getUserFromAccount(transaction.debitedAccountId) : getUserFromAccount(transaction.creditedAccountId) }</td>
                 <td>{transaction.transactionDate}</td>
                 <td>{transaction.creditedAccountId === user.accountId ? 'Sent' : 'received' }</td>
