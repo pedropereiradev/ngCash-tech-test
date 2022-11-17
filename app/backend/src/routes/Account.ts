@@ -10,6 +10,6 @@ const router = Router();
 const accountService = new AccountService(Accounts, Users);
 const accountController = new AccountController(accountService);
 
-router.get('/balance/:id', (req, res) => accountController.getBalance(req, res));
+router.get('/balance', (req, res) => accountController.getBalance(req, res));
 
 export default router;

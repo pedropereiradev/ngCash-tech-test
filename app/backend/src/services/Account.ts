@@ -4,8 +4,11 @@ import Users from '../database/models/Users';
 export default class AccountService {
   constructor(private accountModel: typeof Accounts, private userModel: typeof Users) { }
 
-  private async getUserAccountId(id: string): Promise<string | null> {
-    const result = await this.userModel.findByPk(id, {
+  private async getUserAccountId(username: string): Promise<string | null> {
+    const result = await this.userModel.findOne({
+      where: {
+        username
+      },
       include: [{ model: Accounts }]
     });
 
@@ -13,8 +16,8 @@ export default class AccountService {
   }
 
 
-  public async getBalance(userId: string) {
-    const accountId = await this.getUserAccountId(userId);
+  public async getBalance(username: string) {
+    const accountId = await this.getUserAccountId(username);
 
     if (!accountId) return null;
 

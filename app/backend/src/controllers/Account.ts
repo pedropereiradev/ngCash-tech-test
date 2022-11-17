@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import Token from '../services/utils/Token';
 import AccountService from '../services/Account';
+import { JwtPayload } from 'jsonwebtoken';
 
 export default class AccountController {
   constructor(private accountSevice: AccountService) { }
@@ -9,13 +10,14 @@ export default class AccountController {
   public async getBalance(req: Request, res: Response): Promise<Response> {
     try {
       const { authorization } = req.headers;
-      const { id } = req.params;
 
-      if (!authorization || !Token.validate(authorization)) {
+      const tokenPayload = Token.validate(authorization as string) as JwtPayload;
+
+      if (!authorization || !tokenPayload) {
         return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Expired or invalid token' });
       }
 
-      const result = await this.accountSevice.getBalance(id);
+      const result = await this.accountSevice.getBalance(tokenPayload.username);
 
       if (!result) {
         return res.status(StatusCodes.NOT_FOUND).json({ message: 'User account not found' });
