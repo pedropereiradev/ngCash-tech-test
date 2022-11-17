@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 import { createTransaction, getAllTransactions, getAllUsers, getBalance, getFilteredTransactions, getUserAccountInfo } from '../services/api';
 import { logout } from '../services/userLocalStorage';
 
@@ -36,6 +38,8 @@ function Dashboard() {
   const [showMessage, setShowMessage] = React.useState('');
   const [transactions, setTransactions] = React.useState([]);
   const [order, setOrder] = React.useState({ orderBy: '', date: '' });
+  const [showCalendar, setShowCalendar] = React.useState(false);
+  const [dateValue, setDateValue] = React.useState(new Date());
 
   const { handleSubmit, register, formState: { errors }, reset } = useForm<TransactionFormData>();
   const navigate = useNavigate();
@@ -112,6 +116,10 @@ function Dashboard() {
     }));
   };
 
+  const clearFilters = () => {
+    setOrder({ orderBy: '', date: '' });
+  };
+
   return (
     <>
       <h1>Dashboard</h1>
@@ -151,6 +159,15 @@ function Dashboard() {
               <option value={sort}>{sort}</option>
             ))}
           </select>
+          <button type='button' onClick={() => setShowCalendar((prevState) => !prevState)}>Filter by Date</button>
+          { showCalendar
+            && <Calendar
+              onChange={setDateValue}
+              value={dateValue}
+            onClickDay={(value) => setOrder((prevState) => ({ ...prevState, date: value.toISOString().split('T')[0] }))}
+              />
+          }
+          <button type='button' onClick={clearFilters}>Clear filters</button>
         </section>
         <table>
           <thead>
