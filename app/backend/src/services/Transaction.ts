@@ -14,8 +14,9 @@ export default class TransactionsService {
     private accountModel: typeof Accounts
   ) { }
 
-  private async getUserAccountId(id: string,): Promise<string> {
-    const result = await this.userModel.findByPk(id, {
+  private async getUserAccountId(username: string,): Promise<string> {
+    const result = await this.userModel.findOne({
+      where: { username },
       include: [{ model: Accounts }],
     })
 
@@ -29,9 +30,9 @@ export default class TransactionsService {
   }
 
   private async isCreditedValueValid({ accountId, value }: ICreditedParams) {
-    const userAccount = await this.accountModel.findByPk(accountId);
+    const accountBalance = await this.getAccountBalance(accountId);
 
-    if (userAccount && (value > userAccount.balance)) return null;
+    if (value > accountBalance) return null;
 
     return true;
   }
@@ -92,21 +93,23 @@ export default class TransactionsService {
 
   public async create(transactionParams: ITransaction) {
     const t = await db.transaction();
-
-    const creditedAccountId = await this.getUserAccountId(transactionParams.creditedAccountUserId);
-    const validateData = await this.validations({ accountId: creditedAccountId, value: transactionParams.value });
+    const validateData = await this.validations({ accountId: transactionParams.originAccount, value: Number(transactionParams.value) });
 
     if (validateData) return validateData;
 
     try {
       await this.accountBalanceUpdate({
-        creditedAccountId,
-        debitedAccountId: transactionParams.debitedAccountId,
-        value: transactionParams.value
+        creditedAccountId: transactionParams.originAccount,
+        debitedAccountId: transactionParams.destinationAccount,
+        value: Number(transactionParams.value)
       }, t);
 
       await this.transactionCreate(
-        { debitedAccountId: transactionParams.debitedAccountId, creditedAccountId, value: transactionParams.value },
+        {
+          debitedAccountId: transactionParams.destinationAccount,
+          creditedAccountId: transactionParams.originAccount,
+          value: Number(transactionParams.value),
+        },
         t,
       )
 
@@ -119,8 +122,8 @@ export default class TransactionsService {
     }
   }
 
-  public async getAll(userId: string) {
-    const userAccountId = await this.getUserAccountId(userId);
+  public async getAll(username: string) {
+    const userAccountId = await this.getUserAccountId(username);
 
     return this.transactionModel.findAll({
       where: {
@@ -132,8 +135,8 @@ export default class TransactionsService {
     })
   }
 
-  public async getAllByCashInOrCashOut(userId: string, isCashIn: boolean) {
-    const userAccountId = await this.getUserAccountId(userId);
+  public async getAllByCashInOrCashOut(username: string, isCashIn: boolean) {
+    const userAccountId = await this.getUserAccountId(username);
     const account = isCashIn ? 'debitedAccountId' : 'creditedAccountId';
 
     return this.transactionModel.findAll({
@@ -143,8 +146,8 @@ export default class TransactionsService {
     })
   }
 
-  public async getAllByDate(userId: string, date: string) {
-    const userAccountId = await this.getUserAccountId(userId);
+  public async getAllByDate(username: string, date: string) {
+    const userAccountId = await this.getUserAccountId(username);
 
     return this.transactionModel.findAll({
       where: {
@@ -157,8 +160,8 @@ export default class TransactionsService {
     })
   }
 
-  public async getAllByDateAndCashInOrCashOut(userId: string, date: string, isCashIn: boolean) {
-    const userAccountId = await this.getUserAccountId(userId);
+  public async getAllByDateAndCashInOrCashOut(username: string, date: string, isCashIn: boolean) {
+    const userAccountId = await this.getUserAccountId(username);
     const account = isCashIn ? 'debitedAccountId' : 'creditedAccountId';
 
     return this.transactionModel.findAll({

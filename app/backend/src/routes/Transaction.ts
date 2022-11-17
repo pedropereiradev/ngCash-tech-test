@@ -11,6 +11,6 @@ const transactionService = new TransactionsService(Transactions, Users, Accounts
 const transactionController = new TransactionController(transactionService);
 
 router.post('/', (req, res) => transactionController.create(req, res));
-router.get('/:id', (req, res) => transactionController.getAll(req, res));
+router.get('/', (req, res) => transactionController.getAll(req, res));
 
 export default router;

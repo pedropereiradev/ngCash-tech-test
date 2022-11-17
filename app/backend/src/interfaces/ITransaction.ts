@@ -1,6 +1,6 @@
 export interface ITransaction {
-  debitedAccountId: string
-  creditedAccountUserId: string
+  originAccount: string
+  destinationAccount: string
   value: number
 }
 
