@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { userRegister } from '../services/api';
-import { saveUser } from '../services/userLocalStorage';
+import { saveToken } from '../services/userLocalStorage';
 
 type RegisterFormData = {
   username: string
@@ -23,12 +23,7 @@ function Register() {
     const registerData = await userRegister(data);
 
     if (registerData.token) {
-      saveUser({
-        token: registerData.token,
-        username: data.username,
-        balance: 0,
-      });
-
+      saveToken(registerData.token);
       navigate('/dashboard');
     }
 
