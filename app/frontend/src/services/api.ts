@@ -15,7 +15,7 @@ type UserData = {
 type TransactionData = {
   originAccount: string
   destinationAccount: string
-  value: number
+  value: string
 };
 
 export async function login({ username, password }: UserData) {

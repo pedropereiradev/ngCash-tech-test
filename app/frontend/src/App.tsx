@@ -5,15 +5,18 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Initial from './pages/Initial';
+import { AppProvider } from './context/AppContext';
 
 function App() {
   return (
-    <Routes>
-      <Route path='/' element={<Initial />} />
-      <Route path='/login' element={<Login />} />
-      <Route path='/register' element={<Register />} />
-      <Route path='/dashboard' element={<Dashboard />} />
-   </Routes>
+    <AppProvider>
+      <Routes>
+        <Route path='/' element={<Initial />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/dashboard' element={<Dashboard />} />
+      </Routes>
+    </AppProvider>
   );
 }
 
