@@ -2,6 +2,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import { logout } from '../services/userLocalStorage';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 
 function DashboardHeader() {
   const {
@@ -16,14 +21,47 @@ function DashboardHeader() {
   };
 
   return (
-    <section>
-      <h1>Dashboard</h1>
-      <section>
-        <p>username: {user.username}</p>
-        <p>balance: R${Number(user.balance).toFixed(2).replace('.', ',')}</p>
-        <button type='button' onClick={handleLogout} >Log out</button>
-      </section>
-    </section>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography
+            variant="h6"
+            component="a"
+            href='/dashboard'
+            sx={{
+              flexGrow: 1,
+              color: 'inherit',
+              textDecoration: 'none',
+            }}>
+            NG.Cash
+          </Typography>
+          <Box sx={{ display: 'flex' }}>
+            <Box >
+              <Typography
+                variant='h6'
+                component='p'
+              >
+                Olá {user.username}
+              </Typography>
+              <Typography
+                variant='h6'
+                component='p'
+              >
+                Saldo atual: R${Number(user.balance).toFixed(2).replace('.', ',')}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Button
+                color="inherit"
+                onClick={handleLogout}
+              >
+                Sair
+              </Button>
+            </Box>
+          </Box>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 }
 
