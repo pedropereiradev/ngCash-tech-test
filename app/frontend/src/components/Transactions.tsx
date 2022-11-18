@@ -1,18 +1,11 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import React from 'react';
-import { Calendar } from 'react-calendar';
 import { AppContext } from '../context/AppContext';
 import { getAllTransactions, getFilteredTransactions } from '../services/api';
 import { IAccount, ITransaction } from '../services/interfaces';
 import NorthIcon from '@mui/icons-material/North';
 import SouthIcon from '@mui/icons-material/South';
-
-type TargetFiltersData = {
-  target: {
-    name: string
-    value: string
-  }
-};
+import TransactionsFilters from './TransactionsFilters';
 
 function Transactions() {
   const {
@@ -20,15 +13,8 @@ function Transactions() {
     accounts,
     transactions,
     order,
-    setOrder,
     setTransactions,
-    clearFilters,
   } = React.useContext(AppContext);
-
-  const [showCalendar, setShowCalendar] = React.useState(false);
-  const [dateValue, setDateValue] = React.useState(new Date());
-
-  const SORT_BY = ['cash-in', 'cash-out'];
 
   React.useEffect(() => {
     async function getTransactionsWithFilters() {
@@ -51,13 +37,6 @@ function Transactions() {
     return result?.username || '';
   };
 
-  const handleFiltersChange = ({ target: { name, value } }: TargetFiltersData) => {
-    setOrder((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
   const formatDate = (inputDate: string) => {
     const date = inputDate.split('-');
     
@@ -67,25 +46,8 @@ function Transactions() {
 
   return (
     <section>
-      <h2>Transações realizadas</h2>
-      <section>
-        <select value={order.orderBy} onChange={handleFiltersChange} name='orderBy' placeholder='Order by'>
-          <option value=''>All</option>
-          {SORT_BY.map((sort: string) => (
-            <option value={sort}>{sort}</option>
-          ))}
-        </select>
-        <button type='button' onClick={() => setShowCalendar((prevState) => !prevState)}>Filter by Date</button>
-        {showCalendar
-          && <Calendar
-            onChange={setDateValue}
-            value={dateValue}
-            onClickDay={(value) => setOrder((prevState) => ({ ...prevState, date: value.toISOString().split('T')[0] }))}
-          />
-        }
-        <button type='button' onClick={clearFilters}>Clear filters</button>
-      </section>
-      <Paper elevation={4}>
+      <TransactionsFilters />
+      <Paper elevation={4} sx={{ px: 4, m:2 }}>
         <TableContainer>
         <Table>
           <TableHead>

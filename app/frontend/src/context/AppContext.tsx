@@ -26,7 +26,7 @@ const defaultState = {
   user: { id: '', balance: '', username: '', accountId: '' },
   accounts: [],
   transactions: [],
-  order: { orderBy: '', date: '' },
+  order: { orderBy: 'all', date: '' },
   loading: true,
   setTransactions: () => [],
   setOrder: () => {},
@@ -40,7 +40,7 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
   const [user, setUser] = useState({ id: '', balance: '', username: '', accountId: '' });
   const [accounts, setAccounts] = useState([]);
   const [transactions, setTransactions] = useState([]);
-  const [order, setOrder] = useState({ orderBy: '', date: '' });
+  const [order, setOrder] = useState({ orderBy: 'all', date: '' });
   const [loading, setLoading] = useState(true);
   const location = useLocation();
 
@@ -69,7 +69,7 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
   }, [location]);
 
   const clearFilters = () => {
-    setOrder({ orderBy: '', date: '' });
+    setOrder({ orderBy: 'all', date: '' });
   };
 
   const contextValue = {
