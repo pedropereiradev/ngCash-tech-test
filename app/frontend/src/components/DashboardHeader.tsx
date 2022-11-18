@@ -32,20 +32,36 @@ function DashboardHeader() {
               flexGrow: 1,
               color: 'inherit',
               textDecoration: 'none',
+              fontSize: {
+                sm: '1rem',
+                xs: '0.9rem',
+              },
             }}>
             NG.Cash
           </Typography>
           <Box sx={{ display: 'flex' }}>
-            <Box >
+            <Box marginRight={2}>
               <Typography
                 variant='h6'
                 component='p'
+                sx={{
+                  fontSize: {
+                    sm: '1rem',
+                    xs: '0.8rem',
+                  },
+                }}
               >
                 Olá {user.username}
               </Typography>
               <Typography
                 variant='h6'
                 component='p'
+                sx={{
+                  fontSize: {
+                    sm: '1rem',
+                    xs: '0.8rem',
+                  },
+                }}
               >
                 Saldo atual: R${Number(user.balance).toFixed(2).replace('.', ',')}
               </Typography>
