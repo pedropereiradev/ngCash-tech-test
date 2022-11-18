@@ -1,6 +1,8 @@
 import React, { useState, FC, createContext, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { getAllTransactions, getAllUsers, getBalance, getUserAccountInfo } from '../services/api';
 import { IAccount, IOrder, ITransaction, IUser } from '../services/interfaces';
+import { getToken } from '../services/userLocalStorage';
 
 type AppProviderProps = {
   children: React.ReactNode
@@ -40,26 +42,31 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
   const [transactions, setTransactions] = useState([]);
   const [order, setOrder] = useState({ orderBy: '', date: '' });
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
   useEffect(() => { 
     async function dashboardRenderData() {
-      setLoading(true);
+      const token = getToken();
       const userAccountInfo = await getUserAccountInfo();
-      const userBalanceResult = await getBalance();
-      const userAccounts = await getAllUsers();
-      const userTransactions = await getAllTransactions();
 
-      setUser((prevState) => ({
-        ...prevState,
-        ...userBalanceResult,
-        ...userAccountInfo,
-      }));
-      setAccounts(userAccounts);
-      setTransactions(userTransactions);
-      setLoading(false);
+      if (token && userAccountInfo.username) {
+        const userBalanceResult = await getBalance();
+        const userAccounts = await getAllUsers();
+        const userTransactions = await getAllTransactions();
+
+        setUser((prevState) => ({
+          ...prevState,
+          ...userBalanceResult,
+          ...userAccountInfo,
+        }));
+        setAccounts(userAccounts);
+        setTransactions(userTransactions);
+        setLoading(false);
+      }
     }
     dashboardRenderData();
-  }, []);
+    
+  }, [location]);
 
   const clearFilters = () => {
     setOrder({ orderBy: '', date: '' });
@@ -70,11 +77,11 @@ export const AppProvider: FC<AppProviderProps> = ({ children }) => {
     accounts,
     transactions,
     order,
+    loading,
     setTransactions,
     setOrder,
     setUser,
     clearFilters,
-    loading,
   };
 
   return (
