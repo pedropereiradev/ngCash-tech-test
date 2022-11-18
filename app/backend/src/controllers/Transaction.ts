@@ -36,9 +36,9 @@ export default class TransactionController {
   private static transactionTypeSelector(transactionType: string):string {
     switch (transactionType) {
       case 'cash-in':
-        return 'debitedAccountId';
-      case 'cash-out':
         return 'creditedAccountId';
+      case 'cash-out':
+        return 'debitedAccountId';
       default:
         return '';
     }
