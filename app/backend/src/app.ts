@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import routes from './routes';
 
-export default class App {
+class App {
   public app: express.Express;
 
   constructor() {
@@ -35,3 +35,7 @@ export default class App {
     this.app.listen(PORT, () => console.log(`Running on port ${PORT}`));
   }
 }
+
+export { App };
+
+export const { app } = new App();
