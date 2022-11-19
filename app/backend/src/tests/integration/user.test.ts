@@ -5,13 +5,14 @@ import chaiHttp = require('chai-http');
 import { app } from '../../app';
 import BCrypt from '../../services/utils/Bcrypt';
 import Users from '../../database/models/Users';
+import Token from '../../services/utils/Token';
+import Accounts from '../../database/models/Accounts';
+
+import { request, expect } from 'chai';
 
 chai.use(chaiHttp);
 
-import { request, expect } from 'chai';
-import Token from '../../services/utils/Token';
-import Accounts from '../../database/models/Accounts';
-import db from '../../database/models';
+
 describe('User Endpoint Tests', () => {
 
   describe('Login', () => {
