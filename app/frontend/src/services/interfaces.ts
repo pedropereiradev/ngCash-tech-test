@@ -1,3 +1,14 @@
+export interface IAppContext {
+  user: IUser
+  accounts: IAccount[]
+  transactions: ITransaction[]
+  order: IOrder
+  loading: boolean
+  setTransactions: React.Dispatch<React.SetStateAction<never[]>>
+  setOrder: React.Dispatch<React.SetStateAction<IOrder>>
+  setUser: React.Dispatch<React.SetStateAction<IUser>>
+  clearFilters: () => void
+}
 export interface IUser {
   id: string
   balance: string

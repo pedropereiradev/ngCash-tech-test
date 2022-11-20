@@ -1,26 +1,12 @@
 import React, { useState, FC, createContext, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getAllTransactions, getAllUsers, getBalance, getUserAccountInfo } from '../services/api';
-import { IAccount, IOrder, ITransaction, IUser } from '../services/interfaces';
+import { IAppContext } from '../services/interfaces';
 import { getToken } from '../services/userLocalStorage';
 
 type AppProviderProps = {
   children: React.ReactNode
 };
-
-
-
-interface IAppContext {
-  user: IUser
-  accounts: IAccount[]
-  transactions: ITransaction[]
-  order: IOrder
-  loading: boolean
-  setTransactions: React.Dispatch<React.SetStateAction<never[]>>
-  setOrder: React.Dispatch<React.SetStateAction<IOrder>>
-  setUser: React.Dispatch<React.SetStateAction<IUser>>
-  clearFilters: () => void
-}
 
 const defaultState = {
   user: { id: '', balance: '', username: '', accountId: '' },
