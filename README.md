@@ -44,8 +44,9 @@ npm run compose:up
   -e POSTGRES_USER=root -p 3002:5432 -d postgres
 ```
 ```bash
-  cd app/backend && npm start 
-  cd app/frontend && npm start
+  npm i
+  cd app/backend && npm i && npm start 
+  cd app/frontend && npm i && npm start
 ```
 
 ## Funcionalidades
@@ -96,7 +97,6 @@ npm run compose:up
 + [**Transaction**](#transacao)
     + [Criar](#cria-transacao)
     + [Listar todos](#retorna-todas-transacoes)
-    + [Listar com filtros](#retorna-todas-transacoes-com-filtros)
 
 ### Login
 
@@ -314,7 +314,7 @@ npm run compose:up
 
 #### Retorna todas transacoes
 ```http
-  GET /transacao?transactionType=''&date=''
+  GET /transaction?transactionType=''&date=''
 ```
 
 | Query   | Tipo       | Descrição                                   |
