@@ -11,10 +11,10 @@ function App() {
   return (
     <AppProvider>
       <Routes>
-        <Route path='/' element={<Initial />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/' element={<Initial />} />
       </Routes>
     </AppProvider>
   );
