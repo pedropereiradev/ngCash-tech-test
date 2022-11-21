@@ -27,15 +27,18 @@ describe('Login page', () => {
     })
   })
   describe('Behavior', () => {
+    beforeEach(() => {
+      api.getUserAccountInfo = jest.fn().mockImplementation(() => ({ username: 'Mocked' }));
+      api.getAllUsers = jest.fn().mockImplementation(() => (accounts));
+      api.getAllTransactions = jest.fn().mockImplementation(() => (transactions));
+    })
+
     afterEach(() => jest.clearAllMocks());
 
     describe('Success', () => {
       afterEach(() => jest.clearAllMocks());
 
       it('Should make login successfully', async () => {
-        api.getUserAccountInfo = jest.fn().mockImplementation(() => ({ username: 'Mocked' }));
-        api.getAllUsers = jest.fn().mockImplementation(() => (accounts));
-        api.getAllTransactions = jest.fn().mockImplementation(() => (transactions));
         api.login = jest.fn().mockImplementation(() => ({ token: 'fakeToken' }));
       
         const { user } = renderWithrouter(<App />, { route: '/login' }, appContext);
@@ -56,9 +59,6 @@ describe('Login page', () => {
       afterEach(() => jest.clearAllMocks());
 
       it('Should not allow login without username', async () => {
-        api.getUserAccountInfo = jest.fn().mockImplementation(() => ({ username: 'Mocked' }));
-        api.getAllUsers = jest.fn().mockImplementation(() => (accounts));
-        api.getAllTransactions = jest.fn().mockImplementation(() => (transactions));
         api.login = jest.fn().mockImplementation(() => ({ token: 'fakeToken' }));
       
         const { user } = renderWithrouter(<App />, { route: '/login' }, appContext);
@@ -75,9 +75,6 @@ describe('Login page', () => {
         expect(errorMessage).toBeInTheDocument();
       })
       it('Should not allow login without password', async () => {
-        api.getUserAccountInfo = jest.fn().mockImplementation(() => ({ username: 'Mocked' }));
-        api.getAllUsers = jest.fn().mockImplementation(() => (accounts));
-        api.getAllTransactions = jest.fn().mockImplementation(() => (transactions));
         api.login = jest.fn().mockImplementation(() => ({ token: 'fakeToken' }));
       
         const { user } = renderWithrouter(<App />, { route: '/login' }, appContext);
@@ -95,9 +92,6 @@ describe('Login page', () => {
       })
 
       it('Should not allow login with invalid username or password', async () => {
-        api.getUserAccountInfo = jest.fn().mockImplementation(() => ({ username: 'Mocked' }));
-        api.getAllUsers = jest.fn().mockImplementation(() => (accounts));
-        api.getAllTransactions = jest.fn().mockImplementation(() => (transactions));
         api.login = jest.fn().mockImplementation(() => ({code: 401, response: {data: {message: 'Usuário ou senha incorreta'}}}));
       
         const { user } = renderWithrouter(<App />, { route: '/login' }, appContext);

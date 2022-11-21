@@ -31,12 +31,9 @@ describe('Iniital page', () => {
       const {user} = renderWithrouter(<App />, {route: '/'});
 
       const loginButton = screen.getAllByRole('button', { name: /Login/i });
-
       user.click(loginButton[0]);
-
      
       const usernameInput = screen.getByLabelText(/username/i);
-      
       expect(usernameInput).toBeInTheDocument()
     });
 
@@ -44,11 +41,9 @@ describe('Iniital page', () => {
       const {user} = renderWithrouter(<App />, {route: '/'});
 
       const loginButton = screen.getAllByRole('button', { name: /Login/i });
-
       user.click(loginButton[1]);
 
       const usernameInput = screen.getByLabelText(/username/i);
-      
       expect(usernameInput).toBeInTheDocument()
     });
 
@@ -56,12 +51,9 @@ describe('Iniital page', () => {
       const {user} = renderWithrouter(<App />, {route: '/'});
 
       const registerButton = screen.getAllByRole('button', { name: /Criar conta/i });
-
       user.click(registerButton[0]);
 
-     
       const usernameInput = screen.getByLabelText(/confirmar senha/i);
-      
       expect(usernameInput).toBeInTheDocument()
     });
 
@@ -69,11 +61,9 @@ describe('Iniital page', () => {
       const {user} = renderWithrouter(<App />, {route: '/'});
 
       const registerButton = screen.getAllByRole('button', { name: /Criar conta/i });
-
       user.click(registerButton[1]);
 
       const usernameInput = screen.getByLabelText(/confirmar senha/i);
-      
       expect(usernameInput).toBeInTheDocument()
     });
   });
@@ -82,13 +72,12 @@ describe('Iniital page', () => {
       api.getUserAccountInfo = jest.fn().mockImplementation(async () => ({ username: 'Mocked' }));
       api.getAllUsers = jest.fn().mockImplementation(async () => (accounts));
       api.getAllTransactions = jest.fn().mockImplementation(async () => (transactions));
-      
+
       tokenService.getToken = jest.fn().mockImplementation(async () => 'fakeToken');
-      
+
       renderWithrouter(<App />, { route: '/' }, appContext);  
-      
+
       const transferTitle = await screen.findByRole('heading', {level: 2})
-      
       expect(transferTitle).toBeInTheDocument()
     })
   })

@@ -30,12 +30,15 @@ describe('Register page', () => {
     });
   });
   describe('App behavior', () => {
-    afterEach(() => cleanup);
-
-    it('Should create an account successfully', async () => {
+    beforeEach(() => {
       api.getUserAccountInfo = jest.fn().mockImplementation(async () => ({ username: 'Mocked' }));
       api.getAllUsers = jest.fn().mockImplementation(async () => (accounts));
       api.getAllTransactions = jest.fn().mockImplementation(async () => (transactions));
+    })
+
+    afterEach(() => cleanup);
+
+    it('Should create an account successfully', async () => {
       api.userRegister = jest.fn().mockImplementation(async () => ({token: 'fakeToken'}))
       
       const {user} = renderWithrouter(<App />, { route: '/register' }, appContext);  
@@ -55,9 +58,6 @@ describe('Register page', () => {
     })
     
     it('Should not allow create an account without username', async () => {
-      api.getUserAccountInfo = jest.fn().mockImplementation(async () => ({ username: 'Mocked' }));
-      api.getAllUsers = jest.fn().mockImplementation(async () => (accounts));
-      api.getAllTransactions = jest.fn().mockImplementation(async () => (transactions));
       api.userRegister = jest.fn().mockImplementation(async () => ({token: 'fakeToken'}))
       
       const {user} = renderWithrouter(<App />, { route: '/register' }, appContext);  
@@ -77,9 +77,6 @@ describe('Register page', () => {
     })
 
     it('Should not allow create an account without valid username', async () => {
-      api.getUserAccountInfo = jest.fn().mockImplementation(async () => ({ username: 'Mocked' }));
-      api.getAllUsers = jest.fn().mockImplementation(async () => (accounts));
-      api.getAllTransactions = jest.fn().mockImplementation(async () => (transactions));
       api.userRegister = jest.fn().mockImplementation(async () => ({token: 'fakeToken'}))
       
       const {user} = renderWithrouter(<App />, { route: '/register' }, appContext);  
@@ -99,9 +96,6 @@ describe('Register page', () => {
     })
 
     it('Should not allow create an account without invalid password format', async () => {
-      api.getUserAccountInfo = jest.fn().mockImplementation(async () => ({ username: 'Mocked' }));
-      api.getAllUsers = jest.fn().mockImplementation(async () => (accounts));
-      api.getAllTransactions = jest.fn().mockImplementation(async () => (transactions));
       api.userRegister = jest.fn().mockImplementation(async () => ({token: 'fakeToken'}))
       
       const {user} = renderWithrouter(<App />, { route: '/register' }, appContext);  
@@ -121,9 +115,6 @@ describe('Register page', () => {
      })
     
      it('Should not allow create an account without different passwords', async () => {
-      api.getUserAccountInfo = jest.fn().mockImplementation(async () => ({ username: 'Mocked' }));
-      api.getAllUsers = jest.fn().mockImplementation(async () => (accounts));
-      api.getAllTransactions = jest.fn().mockImplementation(async () => (transactions));
       api.userRegister = jest.fn().mockImplementation(async () => ({token: 'fakeToken'}))
       
       const {user} = renderWithrouter(<App />, { route: '/register' }, appContext);  
@@ -143,9 +134,6 @@ describe('Register page', () => {
      })
     
      it('Should not allow create an account that already exists', async () => {
-      api.getUserAccountInfo = jest.fn().mockImplementation(async () => ({ username: 'Mocked' }));
-      api.getAllUsers = jest.fn().mockImplementation(async () => (accounts));
-      api.getAllTransactions = jest.fn().mockImplementation(async () => (transactions));
       api.userRegister = jest.fn().mockImplementation(async () => ({code: 409, response: {data: {message: 'Usuário já existe'}}}))
       
       const {user} = renderWithrouter(<App />, { route: '/register' }, appContext);  
