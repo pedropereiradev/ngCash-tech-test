@@ -75,8 +75,8 @@ function TransactionsFilters() {
             value={order.orderBy}
             variant='outlined'
           >
-            {SORT_BY.map((sort: ISortBy) => (
-              <MenuItem value={sort.value}>{sort.name}</MenuItem>
+            {SORT_BY.map((sort: ISortBy, index) => (
+              <MenuItem key={index} value={sort.value}>{sort.name}</MenuItem>
             ))}
           </Select>
         </FormControl>

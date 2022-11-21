@@ -80,13 +80,13 @@ function Transfer() {
         }}>
             <InputLabel id='orderByLabel'>Destino</InputLabel>
             <Select
-              labelId='accountLabel'
+              labelId='orderByLabel'
               id='accountId'
               variant='outlined'
               {...register('debitedAccountId', { required: 'Destination account is required' })}
             >
               {accounts.map((account: IAccount) => (
-                <MenuItem value={account.accountId}>{account.username}</MenuItem>
+                <MenuItem key={account.accountId} value={account.accountId}>{account.username}</MenuItem>
               ))}
             </Select>
             <FormHelperText error>

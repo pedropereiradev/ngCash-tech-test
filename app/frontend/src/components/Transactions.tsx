@@ -61,7 +61,7 @@ function Transactions() {
           </TableHead>
           <TableBody>
             {accounts.length && transactions.map((transaction: ITransaction, index) => (
-              <TableRow>
+              <TableRow key={transaction.id}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{`R$ ${Number(transaction.value).toFixed(2).replace('.', ',')}`}</TableCell>
                 <TableCell>{transaction.creditedAccountId === user.accountId ? getUserFromAccount(transaction.debitedAccountId) : getUserFromAccount(transaction.creditedAccountId)}</TableCell>
