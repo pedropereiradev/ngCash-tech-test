@@ -75,7 +75,7 @@ function Login() {
                     id='username'
                     label='Username'
                     variant='outlined'
-                    {...register('username', { required: true })}
+                    {...register('username', { required: 'username é necessário' })}
                   />
                   <FormHelperText error>{errors.username?.message}</FormHelperText>
                 </FormControl>
@@ -86,7 +86,7 @@ function Login() {
                     type='password'
                     label='Senha'
                     variant='outlined'
-                    {...register('password', { required: true })}
+                    {...register('password', { required: 'Senha é necessária' })}
                   />
                   <FormHelperText error>{errors.password?.message}</FormHelperText>
                 </FormControl>
@@ -98,7 +98,7 @@ function Login() {
                   size="large"
                   onClick={onSubmit}
                 >
-                  Login
+                  Logar
                 </Button>
                 </Stack>
               </Box>
