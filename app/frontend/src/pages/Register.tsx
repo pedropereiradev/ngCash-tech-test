@@ -19,7 +19,7 @@ function Register() {
 
   const onSubmit = handleSubmit(async (data) => {
     if (data.password !== data.confirmPassword) {
-      return setShowMessage('Passwords do not match');
+      return setShowMessage('Senhas não coincidem');
     }
 
     const registerData = await userRegister(data);
@@ -80,11 +80,11 @@ function Register() {
                     id='username'
                     label='Username'
                     variant='outlined'
-                    {...register('username', { required: 'Username is required', minLength: 3 })}
+                    {...register('username', { required: 'Username é necessário', minLength: 3 })}
                   />
                   <FormHelperText error>
                     {errors.username?.message}
-                    {(errors.username?.type) === 'minLength' && 'Username must have at least 3 characters'}
+                    {(errors.username?.type) === 'minLength' && 'Username precisa ter ao menos 3 caracteres'}
                   </FormHelperText>
                 </FormControl>
 
@@ -94,11 +94,11 @@ function Register() {
                     type='password'
                     label='Senha'
                     variant='outlined'
-                    {...register('password', { required: 'Password is required', pattern: /^(?=.*?[A-Z])(?=.*?[0-9]).{8,}$/ })}
+                    {...register('password', { required: 'Senha é necessária', pattern: /^(?=.*?[A-Z])(?=.*?[0-9]).{8,}$/ })}
                   />
                   <FormHelperText error>
                     {errors.password?.message}
-                    {(errors.password?.type) === 'pattern' && 'Password must have at least 8 characters, one number and one capital letter'}
+                    {(errors.password?.type) === 'pattern' && 'Senha precisa ter pelo menos 8 dígitos, 1 número e 1 letra maiúscula'}
                   </FormHelperText>
                 </FormControl>
 
