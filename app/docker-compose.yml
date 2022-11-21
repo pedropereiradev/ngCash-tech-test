@@ -13,6 +13,12 @@ services:
       test: ["CMD", "lsof", "-t", "-i:3000"]
       timeout: 10s
       retries: 5
+    environment:
+      LOGIN_ENDPOINT: host.docker.internal/login
+      USER_ENDPOINT: host.docker.internal/user
+      USER_BALANCE_ENDPOINT: host.docker.internal/account/balance
+      USERS_ACCOUNTS_ENDPOINT: host.docker.internal/user/all
+      TRANSACTION_ENDPOINT: host.docker.internal/transaction
   backend:
     container_name: app_backend
     build: ./backend
@@ -24,32 +30,33 @@ services:
       db:
         condition: service_healthy
     environment:
-      - APP_PORT=3001
-      - JWT_SECRET=ng_cash
-      - DB_USER=root
-      - DB_PASS=123456
-      - DB_HOST=db
-      - DB_PORT=3002
-      - DB_NAME=root
+      APP_PORT: 3001
+      JWT_SECRET: ng_cash
+      DB_USER: root
+      DB_PASS: '123456'
+      DB_HOST: db
+      DB_PORT: '5432'
+      DB_NAME: root
     healthcheck:
       test: ["CMD", "lsof", "-t", "-i:3001"]
       timeout: 10s
       retries: 5
+    
   db:
     image: postgres
-    container_name: db
+    container_name: postgres_db
     platform: linux/x86_64
     restart: 'always'
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=123456
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: root
     ports:
       - 3002:5432
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U root"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
     cap_add:
       - SYS_NICE

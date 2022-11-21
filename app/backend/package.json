@@ -6,9 +6,10 @@
   "scripts": {
     "build": "npx tsc",
     "test": "mocha -r ts-node/register ./src/tests/**/*$NAME*.{test,spec}.ts -t 10000 --exit",
-    "start": "npm run build && node .",
+    "start": "npm run db:create && npm run build && node .",
     "dev": "nodemon --watch \"./src/**\" ./src/server.ts",
     "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "db:create": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate",
     "test:coverage": "nyc npm run test"
   },
   "author": "Pedro Pereira",
@@ -18,7 +19,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "http-status-code": "^2.1.0",
+    "http-status-codes": "^2.2.0",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
