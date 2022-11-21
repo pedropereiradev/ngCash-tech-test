@@ -7,16 +7,9 @@ import App from '../../App';
 import renderWithrouter from '../helpers/renderWithRouter';
 import { accounts } from '../mocks/accounts';
 import { transactions } from '../mocks/transactions';
+import { appContext } from '../mocks/appContext';
 
 jest.mock('axios');
-
-const appContext = {
-  user: { id: '1', balance: '100', username: 'Mock', accountId: '123' },
-  accounts: [],
-  transactions: [],
-  order: { orderBy: 'all', date: '' },
-  loading: false,
-}
 
 describe('Iniital page', () => {
   describe('Render', () => {
