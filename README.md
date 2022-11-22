@@ -48,6 +48,7 @@ npm run compose:up
   cd app/backend && npm i && npm start 
   cd app/frontend && npm i && npm start
 ```
+Após realizar um dos processos, acessar localhost:3000 em seu navegador
 
 ## Funcionalidades
 
